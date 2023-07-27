@@ -376,8 +376,8 @@ export class cw3MapViewer extends Renderer {
     }
     loadMap(game) {
         this.game = game;
-        this.elements[7].children[1].value = game.Info.Width.toString();
-        this.elements[7].children[4].value = game.Info.Height.toString();
+        this.elements[7].children[1].setAttribute("value", game.Info.Width.toString());
+        this.elements[7].children[4].setAttribute("value", game.Info.Height.toString());
         let customTextures = new Map();
         for (const [name, file] of defaultTextures) {
             customTextures.set(name, { el: createImgEl(`./img/${file}`) });
@@ -815,8 +815,8 @@ export class cw3MapViewer extends Renderer {
         const terrain = game.Terrain;
         let w1 = this.game.Info.Width;
         let h1 = this.game.Info.Height;
-        let w2 = parseInt(this.elements[7].children[1].value);
-        let h2 = parseInt(this.elements[7].children[4].value);
+        let w2 = parseInt(this.elements[7].children[1].getAttribute("value"));
+        let h2 = parseInt(this.elements[7].children[4].getAttribute("value"));
         let w3 = Math.min(w1, w2);
         let h3 = Math.min(h1, h2);
         let ter = new Array(w2 * h2).fill(500);
@@ -840,8 +840,8 @@ export class cw3MapViewer extends Renderer {
         const terrain = game.Terrain;
         let w1 = this.game.Info.Width;
         let h1 = this.game.Info.Height;
-        let w2 = parseInt(this.elements[7].children[1].value);
-        let h2 = parseInt(this.elements[7].children[4].value);
+        let w2 = parseInt(this.elements[7].children[1].getAttribute("value"));
+        let h2 = parseInt(this.elements[7].children[4].getAttribute("value"));
         let ter = new Array(w2 * h2).fill(0);
         let wal = new Array(w2 * h2).fill(0);
         function bilinear(arr, x, y) {

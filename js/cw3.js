@@ -327,9 +327,6 @@ function decompress(buffer, callback) {
         let g = new Game(el);
         let doc = document.implementation.createDocument("", "");
         g.save(doc);
-        if (!compare(clone.getRootNode(), doc.getRootNode())) {
-            debugger;
-        }
         callback(g);
     });
 }
@@ -349,7 +346,7 @@ async function fetchMapList() {
     let parser = new DOMParser();
     let doc = parser.parseFromString(plain, "text/xml");
     let list = [];
-    for (const m of doc.firstChild.children) {
+    for (const m of doc.firstElementChild.children) {
         list.push(new ColonialSpace(m));
     }
     return list;

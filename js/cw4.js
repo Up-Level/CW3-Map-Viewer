@@ -392,21 +392,26 @@ class ColonialSpace {
     }
     async download() {
         let buffer = await (await fetch(`https://knucklecracker.com/creeperworld4/queryMaps.php?query=map&guid=${this.Md5}`)).arrayBuffer();
-        let compressed = Array.from(new Uint8Array(buffer));
-        compressed = compressed.slice(4);
-        let data = new Zlib.Gunzip(new Uint8Array(compressed)).decompress();
-        let reader = new Reader(data.buffer);
-        let key = reader.readUint8();
-        let val = reader.readString();
-        return new TagCompound(reader);
+        return loadMap(new Uint8Array(buffer));
     }
+}
+export async function loadMap(data) {
+    let compressed = Array.from(data);
+    compressed = compressed.slice(4);
+    let uncompressed = new Zlib.Gunzip(new Uint8Array(compressed)).decompress();
+    let reader = new Reader(uncompressed.buffer);
+    let key = reader.readUint8();
+    let val = reader.readString();
+    return new TagCompound(reader);
 }
 async function fetchMapList() {
     let plain = new TextDecoder("utf-8").decode(new Zlib.Gunzip(new Uint8Array(await (await fetch("https://knucklecracker.com/creeperworld4/queryMaps.php?query=maplist")).arrayBuffer())).decompress());
     let parser = new DOMParser();
     let doc = parser.parseFromString(plain, "text/xml");
     let list = [];
-    for (const m of doc.firstChild.children) {
+    for (const m of doc.firstElementChild.children) {
+        if (m.tagName === "d")
+            continue;
         list.push(new ColonialSpace(m));
     }
     return list;

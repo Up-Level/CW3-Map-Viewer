@@ -87,6 +87,32 @@ class Vector3 {
     }
 }
 class RenderObject {
+    get parent() { return this._parent; }
+    set parent(v) {
+        if (this._parent == v)
+            return;
+        if (this._parent) {
+            this._parent._children.splice(this._parent._children.indexOf(this));
+        }
+        this._parent = v;
+        this._parent._children.push(this);
+        this._staleMatrix = true;
+    }
+    get children() { return this._children; }
+    get staleMatrix() { return this._staleMatrix || this._parent?.staleMatrix; }
+    get matrix() {
+        if (this.staleMatrix) {
+            this._matrix = mul(translate(this._px, this._py, this._pz), rotateZ(this._rz), rotateY(this._ry), rotateX(this._rx), scale(this._sx, this._sy, this._sz));
+            if (this._parent) {
+                this._matrix = mul(this._parent.matrix, this._matrix);
+            }
+            for (const child of this._children) {
+                child._staleMatrix = true;
+            }
+            this._staleMatrix = false;
+        }
+        return this._matrix;
+    }
     constructor(mesh) {
         this._px = 0;
         this._py = 0;
@@ -153,32 +179,6 @@ class RenderObject {
                 ref._staleMatrix = true;
             } },
         };
-    }
-    get parent() { return this._parent; }
-    set parent(v) {
-        if (this._parent == v)
-            return;
-        if (this._parent) {
-            this._parent._children.splice(this._parent._children.indexOf(this));
-        }
-        this._parent = v;
-        this._parent._children.push(this);
-        this._staleMatrix = true;
-    }
-    get children() { return this._children; }
-    get staleMatrix() { return this._staleMatrix || this._parent?.staleMatrix; }
-    get matrix() {
-        if (this.staleMatrix) {
-            this._matrix = mul(translate(this._px, this._py, this._pz), rotateZ(this._rz), rotateY(this._ry), rotateX(this._rx), scale(this._sx, this._sy, this._sz));
-            if (this._parent) {
-                this._matrix = mul(this._parent.matrix, this._matrix);
-            }
-            for (const child of this._children) {
-                child._staleMatrix = true;
-            }
-            this._staleMatrix = false;
-        }
-        return this._matrix;
     }
     Translate(pos) {
         this._px += pos.x;
