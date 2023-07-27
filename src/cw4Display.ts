@@ -225,8 +225,8 @@ function genMapMesh(data: TagCompound, shader: ShaderProgram) {
     let terrain = data.dict.get("world").dict.get("t");
 
     // wallTexture = 108;  // idk
-    console.log(theme);
-    console.log(data.dict.get("world").dict);
+    //console.log(theme);
+    //console.log(data.dict.get("world").dict);
 
     let vertices = [];
     let uv = [];
@@ -657,37 +657,42 @@ export class cw4MapViewer extends Renderer {
 
         if (data.dict.get("cpacks")) {
             for (const item of data.dict.get("cpacks").value) {
-                let el = item.dict.get("f").dict.get("0").dict;
+                let cpackName = item.dict.get("b").value;
+                let scripts = item.dict.get("f").dict;
 
-                let name = el.get("a").value;
-                let code = new TextDecoder("utf-8").decode(el.get("b").value);
+                for (const script of scripts) {
+                    const el = script[1].dict;
 
-                let node = document.createElement("div");
-                node.innerText = name;
+                    let name = `${cpackName}/${el.get("a").value}`;
+                    let code = new TextDecoder("utf-8").decode(el.get("b").value);
 
-                let tab: HTMLElement;
-                node.addEventListener("click", () => {
-                    if (!tab) {
-                        tab = addTab({
-                            name: name,
-                            onClose: () => {
-                                tab = null;
+                    let node = document.createElement("div");
+                    node.innerText = name;
+
+                    let tab: HTMLElement;
+                    node.addEventListener("click", () => {
+                        if (!tab) {
+                            tab = addTab({
+                                name: name,
+                                onClose: () => {
+                                    tab = null;
+                                }
+                            });
+                            tab.classList.add("crplCode");
+
+                            let highlight = document.createElement("div");
+                            try {
+                                produceHighlighted(code, highlight);
+                            } catch (e) {
+                                console.error(e);
                             }
-                        });
-                        tab.classList.add("crplCode");
 
-                        let highlight = document.createElement("div");
-                        try {
-                            produceHighlighted(code, highlight);
-                        } catch (e) {
-                            console.error(e);
+                            tab.appendChild(highlight);
                         }
+                    });
 
-                        tab.appendChild(highlight);
-                    }
-                });
-
-                leftTabs.script.tab.appendChild(node);
+                    leftTabs.script.tab.appendChild(node);
+                }
             }
         }
 

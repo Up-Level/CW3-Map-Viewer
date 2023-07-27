@@ -713,7 +713,9 @@ function createImgEl(src: string) {
 
 function download(data: BlobPart, filename: string) {
     let file = new Blob([data]);
+    // @ts-ignore
     if (window.navigator.msSaveOrOpenBlob) { // IE10+
+        // @ts-ignore
         window.navigator.msSaveOrOpenBlob(file, filename);
     } else { // Others
         let a = document.createElement("a");
@@ -812,7 +814,7 @@ export class cw3MapViewer extends Renderer {
                 <button onclick={() => this.scale()} title="Stretch the map to the specified size">Scale</button>
             </div>,
             <button onclick={() => this.save()}>Save</button>
-        ]);
+        ]) as HTMLElement[];
         leftTabs.general.tab.append(...this.elements);
 
         let vsSource: string;
@@ -906,8 +908,8 @@ export class cw3MapViewer extends Renderer {
         //#region Load game data
         this.game = game;
         // for (const item of actions) { document.getElementById(item.elementName).disabled = false; }
-        this.elements[7].children[1].value = game.Info.Width.toString();
-        this.elements[7].children[4].value = game.Info.Height.toString();
+        this.elements[7].children[1].setAttribute("value", game.Info.Width.toString());
+        this.elements[7].children[4].setAttribute("value", game.Info.Height.toString());
         //#endregion
 
         let customTextures = new Map<string, { el: HTMLImageElement, tex?: WebGLTexture }>();
@@ -1432,8 +1434,8 @@ export class cw3MapViewer extends Renderer {
         let w1 = this.game.Info.Width;
         let h1 = this.game.Info.Height;
 
-        let w2 = parseInt(this.elements[7].children[1].value);
-        let h2 = parseInt(this.elements[7].children[4].value);
+        let w2 = parseInt(this.elements[7].children[1].getAttribute("value"));
+        let h2 = parseInt(this.elements[7].children[4].getAttribute("value"));
 
         let w3 = Math.min(w1, w2);
         let h3 = Math.min(h1, h2);
@@ -1466,8 +1468,8 @@ export class cw3MapViewer extends Renderer {
         let w1 = this.game.Info.Width;
         let h1 = this.game.Info.Height;
 
-        let w2 = parseInt(this.elements[7].children[1].value);
-        let h2 = parseInt(this.elements[7].children[4].value);
+        let w2 = parseInt(this.elements[7].children[1].getAttribute("value"));
+        let h2 = parseInt(this.elements[7].children[4].getAttribute("value"));
 
         let ter = new Array(w2 * h2).fill(0);
         let wal = new Array(w2 * h2).fill(0);

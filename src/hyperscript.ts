@@ -47,7 +47,7 @@ function addProps(el: HTMLElement, props: Object) {
  */
 function domDiff(element: El | string, container: HTMLElement, childIndex: number) {
     // element to replace
-    let el = container.childNodes[childIndex];
+    let el = container.childNodes[childIndex] as HTMLElement;
 
     if(!element) {
         return;

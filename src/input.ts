@@ -15,10 +15,10 @@ let rightDown = false;
 let middleDown = false;
 
 document.body.addEventListener("keydown", (e) => {
-    keys.add(e.code);
+    keys.add(e.code as KeyCode);
 });
 document.body.addEventListener("keyup", (e) => {
-    keys.delete(e.code);
+    keys.delete(e.code as KeyCode);
 });
 document.addEventListener("mousedown", (e) => {
     switch (e.button) {

@@ -202,6 +202,7 @@ export function produceHighlighted(text: string, el: HTMLElement) {
                 el.appendChild(document.createTextNode(spelling));
                 break;
             case '#':
+                // @ts-ignore (c is changed by accept())
                 while (c != '\n' && currentPos <= text.length) {
                     accept();
                 }

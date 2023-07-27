@@ -548,6 +548,7 @@ export async function loadMap(data: Uint8Array) {
     // int32 uncompressed size
     compressed = compressed.slice(4);
 
+    // @ts-ignore (Called in from index.html)
     let uncompressed = new Zlib.Gunzip(
         new Uint8Array(compressed)
     ).decompress() as Uint8Array;
@@ -564,6 +565,7 @@ export async function loadMap(data: Uint8Array) {
 
 async function fetchMapList() {
     let plain = new TextDecoder("utf-8").decode(
+        // @ts-ignore (Called in from index.html)
         new Zlib.Gunzip(new Uint8Array(
             await (await fetch("https://knucklecracker.com/creeperworld4/queryMaps.php?query=maplist")).arrayBuffer()
         )).decompress()
@@ -573,7 +575,9 @@ async function fetchMapList() {
     let doc = parser.parseFromString(plain, "text/xml");
 
     let list: ColonialSpace[] = [];
-    for (const m of doc.firstChild.children) {
+
+    for (const m of doc.firstElementChild.children) {
+        if (m.tagName === "d") continue;
         list.push(new ColonialSpace(m));
     }
 

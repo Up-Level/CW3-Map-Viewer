@@ -109,6 +109,7 @@ async function openCW3(game: Game) {
         renderer.loadMap(game);
     } else {
         if(renderer) {
+            // Idk what's going on here, no implementation of Renderer has delete()?
             renderer.delete();
         }
         renderer = new cw3MapViewer(canvas, container);
@@ -172,11 +173,11 @@ function addTab(options: {
                 // using click to select last open tab
                 // bit hacky but fuck it
                 if (topEl.previousSibling) {
-                    topEl.previousSibling.click();
+                    (topEl.previousSibling as HTMLElement).click();
                     // selectTopTab(topEl.previousSibling);
                 } else if (topTabBar.children.length > 0) {
                     // selectTopTab(topTabBar.children[0]);
-                    topTabBar.children[0].click();
+                    (topTabBar.children[0] as HTMLElement).click();
                 }
             }
 

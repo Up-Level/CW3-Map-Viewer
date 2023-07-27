@@ -238,7 +238,7 @@ class Unit {
 
     // public pat?: number;
 
-    private data: Element;
+    public data: Element;
 
     constructor(unit: Element) {
         this.data = unit;
@@ -456,6 +456,7 @@ function compare(a: Element, b: Element) {
 function decompress(buffer: ArrayBuffer, callback: (game: Game) => any) {
     let arr = new Uint8Array(buffer);
 
+    // @ts-ignore (Called in from index.html)
     LZMA.decompress(arr, (result) => {
         let parser = new DOMParser();
 
@@ -466,9 +467,9 @@ function decompress(buffer: ArrayBuffer, callback: (game: Game) => any) {
         let doc = document.implementation.createDocument("", "");
         g.save(doc);
 
-        if(!compare(clone.getRootNode(), doc.getRootNode())) {
+        /*if(!compare(clone.getRootNode(), doc.getRootNode())) {
             debugger;
-        }
+        }*/
 
         callback(g);
     });
@@ -483,6 +484,7 @@ async function compress(game: Game) {
     let xmlString = serializer.serializeToString(doc);
 
     return new Promise<number[]>(resolve => {
+        // @ts-ignore (Called in from index.html)
         LZMA.compress(xmlString, 6, (result) => {
             resolve(result);
         });
@@ -492,6 +494,7 @@ async function compress(game: Game) {
 
 async function fetchMapList() {
     let plain = new TextDecoder("utf-8").decode(
+        // @ts-ignore (Called in from index.html)
         new Zlib.Gunzip(
             new Uint8Array(
                 await (await fetch("https://knucklecracker.com/creeperworld3/queryMaps.php?query=maplist")).arrayBuffer()
@@ -503,7 +506,7 @@ async function fetchMapList() {
     let doc = parser.parseFromString(plain, "text/xml");
 
     let list: ColonialSpace[] = [];
-    for (const m of doc.firstChild.children) {
+    for (const m of doc.firstElementChild.children) {
         list.push(new ColonialSpace(m));
     }
 
